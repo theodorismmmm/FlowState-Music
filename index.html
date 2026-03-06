@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FlowState Music</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎵</text></svg>" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════
+       LOGIN SCREEN
+  ═══════════════════════════════════════════════════════ -->
+  <div id="login-screen" class="screen">
+    <div class="login-bg-gradient"></div>
+    <div class="login-card glass">
+      <div class="login-logo">
+        <span class="logo-icon">🎵</span>
+        <h1 class="logo-name">FlowState<span class="accent">Music</span></h1>
+      </div>
+      <p class="login-subtitle">Sign in to start listening</p>
+
+      <form id="login-form" autocomplete="on" novalidate>
+        <div class="form-field">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" name="email" placeholder="you@example.com"
+                 autocomplete="email" required />
+        </div>
+        <div class="form-field">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" name="password" placeholder="••••••••"
+                 autocomplete="current-password" required />
+        </div>
+        <p id="login-error" class="form-error" role="alert" aria-live="polite"></p>
+        <button type="submit" id="login-btn" class="btn btn-primary btn-full">Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PLAYER SCREEN
+  ═══════════════════════════════════════════════════════ -->
+  <div id="player-screen" class="screen hidden">
+
+    <!-- Top Bar -->
+    <header class="topbar glass">
+      <button id="sidebar-toggle" class="icon-btn topbar-menu" aria-label="Toggle sidebar">☰</button>
+      <div class="topbar-brand">
+        <span class="logo-icon small">🎵</span>
+        <span class="logo-name">FlowState<span class="accent">Music</span></span>
+      </div>
+      <div class="topbar-user">
+        <div class="user-info">
+          <span id="user-name" class="user-name"></span>
+          <span id="user-email" class="user-email"></span>
+        </div>
+        <button id="logout-btn" class="btn btn-ghost" aria-label="Sign out">Sign out</button>
+      </div>
+    </header>
+
+    <div class="app-layout">
+
+      <!-- Sidebar overlay (mobile) -->
+      <div id="sidebar-overlay" class="sidebar-overlay" aria-hidden="true"></div>
+
+      <!-- Sidebar -->
+      <aside id="sidebar" class="sidebar glass">
+        <nav class="sidebar-nav" role="navigation" aria-label="Main navigation">
+          <button class="nav-btn active" data-panel="library-panel" aria-label="Library">
+            <span class="nav-icon">📚</span>
+            <span class="nav-label">Library</span>
+          </button>
+          <button class="nav-btn" data-panel="queue-panel" aria-label="Queue">
+            <span class="nav-icon">📋</span>
+            <span class="nav-label">Queue</span>
+          </button>
+          <button class="nav-btn" data-panel="upload-panel" aria-label="Upload Music">
+            <span class="nav-icon">⬆️</span>
+            <span class="nav-label">Upload</span>
+          </button>
+          <button class="nav-btn" data-panel="youtube-panel" aria-label="YouTube Import">
+            <span class="nav-icon">▶️</span>
+            <span class="nav-label">YouTube</span>
+          </button>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <main class="main-content">
+
+        <!-- ── Library Panel ──────────────────────────────────── -->
+        <section id="library-panel" class="panel active" aria-label="Music Library">
+          <div class="panel-header">
+            <h2>Library</h2>
+            <div class="search-wrapper">
+              <span class="search-icon" aria-hidden="true">🔍</span>
+              <input type="search" id="search-input" placeholder="Search tracks, artists…"
+                     aria-label="Search library" />
+            </div>
+          </div>
+          <ul id="library-list" class="track-list" role="list" aria-label="Track list"></ul>
+        </section>
+
+        <!-- ── Queue Panel ────────────────────────────────────── -->
+        <section id="queue-panel" class="panel" aria-label="Play Queue">
+          <div class="panel-header">
+            <h2>Queue</h2>
+            <button id="clear-queue-btn" class="btn btn-ghost" aria-label="Clear queue">Clear all</button>
+          </div>
+          <ul id="queue-list" class="track-list queue-list" role="list" aria-label="Queue"></ul>
+        </section>
+
+        <!-- ── Upload Panel ───────────────────────────────────── -->
+        <section id="upload-panel" class="panel" aria-label="Upload Music">
+          <div class="panel-header">
+            <h2>Upload Music</h2>
+          </div>
+          <div id="upload-drop-zone" class="upload-zone glass" role="button" tabindex="0"
+               aria-label="Drop audio files here or click to browse">
+            <div class="upload-zone-inner">
+              <span class="upload-icon" aria-hidden="true">🎵</span>
+              <p class="upload-label">Drop audio files here</p>
+              <p class="upload-sub">or click to browse</p>
+              <p class="upload-formats">Supports MP3, FLAC, OGG, WAV, M4A</p>
+              <button id="upload-btn" class="btn btn-primary" type="button">Choose Files</button>
+            </div>
+          </div>
+          <input type="file" id="upload-input" accept=".mp3,.flac,.ogg,.wav,.m4a,audio/*"
+                 multiple hidden aria-hidden="true" />
+          <div id="upload-progress" class="upload-progress-wrap">
+            <div id="upload-progress-bar" class="upload-progress-bar"></div>
+          </div>
+          <p id="upload-status" class="upload-status" aria-live="polite"></p>
+        </section>
+
+        <!-- ── YouTube Panel ──────────────────────────────────── -->
+        <section id="youtube-panel" class="panel" aria-label="YouTube Import">
+          <div class="panel-header">
+            <h2>Import from YouTube</h2>
+          </div>
+          <div class="yt-info-card glass">
+            <div class="yt-steps">
+              <div class="yt-step">
+                <span class="yt-step-num">1</span>
+                <p>Paste a YouTube URL below and click <strong>Open Converter</strong>.</p>
+              </div>
+              <div class="yt-step">
+                <span class="yt-step-num">2</span>
+                <p>On the converter site, download the MP3 to your device.</p>
+              </div>
+              <div class="yt-step">
+                <span class="yt-step-num">3</span>
+                <p>Go to <strong>Upload</strong> and add the downloaded file.</p>
+              </div>
+            </div>
+          </div>
+          <form id="yt-form" class="yt-form" novalidate>
+            <div class="form-field">
+              <label for="yt-url-input">YouTube URL</label>
+              <input type="url" id="yt-url-input" placeholder="https://youtube.com/watch?v=…"
+                     autocomplete="off" aria-label="YouTube video URL" />
+            </div>
+            <button id="yt-open-btn" type="button" class="btn btn-primary">
+              Open Converter ↗
+            </button>
+          </form>
+        </section>
+
+        <!-- ── Now Playing (center, large) ────────────────────── -->
+        <section id="now-playing-section" class="now-playing-area" aria-label="Now Playing">
+          <div class="now-playing-card glass">
+            <div class="album-art-wrapper">
+              <img id="now-playing-cover" class="album-art" src="" alt="Album art"
+                   onerror="this.src=''"/>
+              <div class="vinyl-ring" aria-hidden="true"></div>
+            </div>
+            <div class="now-playing-meta">
+              <p id="now-playing-title" class="np-title">No track playing</p>
+              <p id="now-playing-artist" class="np-artist">—</p>
+              <p id="now-playing-album" class="np-album"></p>
+            </div>
+            <div class="player-controls-wrap">
+              <!-- Seek Bar -->
+              <div class="seek-wrap">
+                <span id="current-time" class="time-label">0:00</span>
+                <input type="range" id="seek-bar" class="seek-bar" min="0" max="100"
+                       value="0" step="0.1" aria-label="Seek position" />
+                <span id="duration" class="time-label">0:00</span>
+              </div>
+
+              <!-- Controls Row -->
+              <div class="controls-row">
+                <button id="shuffle-btn" class="icon-btn control-btn" title="Shuffle" aria-label="Shuffle">🔀</button>
+                <button id="prev-btn" class="icon-btn control-btn" title="Previous" aria-label="Previous track">⏮</button>
+                <button id="play-pause-btn" class="icon-btn control-btn play-btn" title="Play/Pause" aria-label="Play or pause">▶</button>
+                <button id="next-btn" class="icon-btn control-btn" title="Next" aria-label="Next track">⏭</button>
+                <button id="loop-btn" class="icon-btn control-btn" title="Loop" aria-label="Loop mode">🔁</button>
+              </div>
+
+              <!-- Volume -->
+              <div class="volume-row">
+                <button id="mute-btn" class="icon-btn volume-btn" aria-label="Mute/Unmute">🔊</button>
+                <input type="range" id="volume-slider" class="volume-slider" min="0" max="100"
+                       value="80" step="1" aria-label="Volume" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <!-- ── Mini Player (bottom bar) ─────────────────────────── -->
+    <div id="mini-player" class="mini-player glass" role="region" aria-label="Mini player">
+      <div class="mini-progress-bar">
+        <div id="mini-seek" class="mini-seek-fill"></div>
+      </div>
+      <div class="mini-inner">
+        <img id="mini-cover" class="mini-cover" src="" alt="" aria-hidden="true" />
+        <div class="mini-meta">
+          <span id="mini-title" class="mini-title"></span>
+          <span id="mini-artist" class="mini-artist"></span>
+        </div>
+        <div class="mini-controls">
+          <button id="mini-play-pause" class="icon-btn" aria-label="Play or pause">▶</button>
+          <button id="mini-next" class="icon-btn" aria-label="Next track">⏭</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Keyboard shortcuts hint -->
+    <div class="keyboard-hint" aria-hidden="true">
+      <kbd>Space</kbd> Play/Pause &nbsp;
+      <kbd>←</kbd><kbd>→</kbd> Seek &nbsp;
+      <kbd>↑</kbd><kbd>↓</kbd> Volume
+    </div>
+
+  </div><!-- /#player-screen -->
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

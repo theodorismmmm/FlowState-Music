@@ -1,0 +1,10 @@
+[
+  {
+    "id": "1",
+    "title": "Track Title",
+    "artist": "Artist Name",
+    "album": "Album Name",
+    "file": "/music/track.mp3",
+    "cover": "/music/covers/track.jpg"
+  }
+]
